@@ -1,6 +1,6 @@
 defmodule FlexStream do
-  use GenServer
-
+  use GenServer, restart: :permanent, shutdown: 10_000
+  
   require Logger
   require Gpio
 
@@ -16,7 +16,7 @@ defmodule FlexStream do
   def init(:ok) do
     Gpio.init()
 
-    flex_connection()
+    dipex()
 
     {:ok, []}
   end
@@ -28,7 +28,7 @@ defmodule FlexStream do
   msg gets parsed
   based on msg gpio is turned on or off
   """
-  def flex_connection do
+  def dipex do
     {:ok, flex} = connect()
 
     :ok = all(flex)
@@ -47,8 +47,12 @@ defmodule FlexStream do
   def read(flex) do
     {:ok, msg} = :gen_tcp.recv(flex, 0)
 
-    Logger.warn("\n\n" <> msg <> "\n"<> to_string(DateTime.utc_now) <> "\n")
+    log_msg(msg)
 
     read(flex)
+  end
+
+  def log_msg(msg) do
+    Logger.warn("\n\n" <> msg <> "\n"<> to_string(DateTime.utc_now) <> "\n")
   end
 end
