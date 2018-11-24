@@ -47,7 +47,7 @@ defmodule FlexStream do
   def read(flex) do
     {:ok, msg} = :gen_tcp.recv(flex, 0)
 
-    Logger.warn("\n\n-------\n" <> msg <> "--------\n\n" <> to_string(DateTime.utc_now) <> "\n")
+    Logger.warn("\n\n" <> msg <> "\n"<> to_string(DateTime.utc_now) <> "\n")
 
     read(flex)
   end
