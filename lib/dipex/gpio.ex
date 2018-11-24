@@ -6,14 +6,16 @@ defmodule Gpio do
   def on do
     case @flex_rpi do
       nil -> Logger.warn "nil on"
-      _ -> :os.cmd('gpio write 0 1') |> Logger.warn
+      "0" -> Logger.warn "0 on"
+      "1" -> :os.cmd('gpio write 0 1') |> Logger.warn
     end
   end
 
   def off do
     case @flex_rpi do
       nil -> Logger.warn "nil off"
-      _ -> :os.cmd('gpio write 0 0') |> Logger.warn
+      "0" -> Logger.warn "0 off"
+      "1" -> :os.cmd('gpio write 0 0') |> Logger.warn
     end
   end
 
@@ -35,14 +37,16 @@ defmodule Gpio do
   def unexport() do
     case @flex_rpi do
       nil -> Logger.warn "nil unexportall"
-      _ -> :os.cmd('gpio unexportall') |> Logger.warn
+      "0" -> Logger.warn "0 unexportall"
+      "1" -> :os.cmd('gpio unexportall') |> Logger.warn
     end
   end
 
   def export() do
     case @flex_rpi do
       nil -> Logger.warn "nil export"
-      _ -> :os.cmd('gpio mode 0 out') |> Logger.warn
+      "0" -> Logger.warn "0 export"
+      "1" -> :os.cmd('gpio mode 0 out') |> Logger.warn
     end
   end
 end
