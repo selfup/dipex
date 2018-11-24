@@ -1,6 +1,7 @@
 defmodule FlexStream do
-  use GenServer, restart: :permanent, shutdown: 10_000
+  use GenServer, restart: :permanent, shutdown: 5_000
   
+  require Supervisor
   require Logger
   require Gpio
 
@@ -26,7 +27,11 @@ defmodule FlexStream do
   def init(:ok) do
     Gpio.init()
 
-    dipex()
+    children = [{Task, fn -> dipex() end}]
+
+    opts = [strategy: :one_for_one, name: Dipex.FlexStream.Supervisor]
+
+    Supervisor.start_link(children, opts)
 
     {:ok, []}
   end
