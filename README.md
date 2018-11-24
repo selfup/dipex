@@ -1,18 +1,45 @@
 # Dipex
 
-To start your Phoenix server:
+Dipole Antenna Elixir Project! :radio:
 
-  * Install dependencies with `mix deps.get`
-  * Start Phoenix endpoint with `mix phx.server`
+## Purpose
 
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
+* Listen to a Flex Radio TCP stream
+* Parse VITA49
+* Based on antenna/frequency turn on/off relay switch via Raspberry Pi GPIO
+* Relay switch dictate dipole mode on antenna
 
-Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
+This is for my Dad :pray:
 
-## Learn more
+We are both HAM radio operators :tada:
 
-  * Official website: http://www.phoenixframework.org/
-  * Guides: https://hexdocs.pm/phoenix/overview.html
-  * Docs: https://hexdocs.pm/phoenix
-  * Mailing list: http://groups.google.com/group/phoenix-talk
-  * Source: https://github.com/phoenixframework/phoenix
+## On Boot
+
+#### GPIO
+
+* Unexports all pins
+* Exports mode out for BCM pin 17
+
+#### TCP
+
+* Opens TCP `:gen_tcp` connection to flex
+* Send a recieve all msg to flex with `:gen_tcp` (need to CLRF msg string)
+* Recursive loop recv with `:gen_tcp` 
+
+#### Parsing
+
+* Parses recv msg to check for antenna and frequencies
+* Based on antenna/frequency turn on/off relay switch via Raspberry Pi GPIO
+
+Forever!
+
+## API
+
+If running on `10.0.0.230`
+
+```elixir
+curl 10.230:4000/api/?cmd=on
+curl 10.230:4000/api/?cmd=off
+curl 10.230:4000/api/?cmd=unexport
+curl 10.230:4000/api/?cmd=export
+```
