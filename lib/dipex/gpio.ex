@@ -45,6 +45,6 @@ defmodule Gpio do
   end
 
   defp export() do
-    :os.cmd('gpio mode 0 1') |> Logger.warn
+    :os.cmd('gpio mode 0 out') |> Logger.warn
   end
 end

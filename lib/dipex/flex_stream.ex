@@ -4,10 +4,10 @@ defmodule FlexStream do
   require Logger
   require Gpio
 
-  @all 'c1|sub slice all'
+  @all "c1|sub slice all\r\n"
   @flex_ip '10.192'
   @flex_port 4992
-  @tcp_options [:binary, active: false]
+  @tcp_options [:binary, active: false, packet: 0]
 
   def start_link do
     GenServer.start_link(__MODULE__, :ok, [])
@@ -45,7 +45,7 @@ defmodule FlexStream do
   def read(flex) do
     {:ok, msg} = :gen_tcp.recv(flex, 0)
 
-    Logger.warn(msg)
+    Logger.warn("\n\n-------\n" <> msg <> "--------\n\n" <> to_string(DateTime.utc_now) <> "\n")
 
     read(flex)
   end
