@@ -7,8 +7,8 @@ defmodule Dipex.Application do
   def start(_type, _args) do
     children = [
       DipexWeb.Endpoint,
-      worker(Gpio, []),
-      worker(FlexStream, []),
+      Gpio,
+      FlexStream,
     ]
 
     opts = [strategy: :one_for_one, name: Dipex.Supervisor]
