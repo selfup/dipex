@@ -9,7 +9,7 @@ defmodule FlexStream do
   @flex_port 4992
   @tcp_options [:binary, active: false, packet: 0]
 
-  def start_link do
+  def start_link(_) do
     GenServer.start_link(__MODULE__, :ok, [])
   end
 
