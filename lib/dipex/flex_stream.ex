@@ -4,10 +4,20 @@ defmodule FlexStream do
   require Logger
   require Gpio
 
+  # must include CLRF for radio to actually send back all information
+  # otherwise it just sends back connection metadata
   @all "c1|sub slice all\r\n"
-  @flex_ip '10.192'
   @flex_port 4992
   @tcp_options [:binary, active: false, packet: 0]
+
+  defp flex_ip do
+    env_flex_ip = System.get_env("FLEX_IP")
+
+    case env_flex_ip do
+      nil -> '10.192'
+      ip -> String.to_charlist(ip)
+    end
+  end
 
   def start_link(_) do
     GenServer.start_link(__MODULE__, :ok, [])
@@ -37,7 +47,7 @@ defmodule FlexStream do
   end
 
   def connect do
-    :gen_tcp.connect(@flex_ip, @flex_port, @tcp_options)
+    flex_ip() |> :gen_tcp.connect(@flex_port, @tcp_options)
   end
 
   def all(flex) do
