@@ -7,5 +7,7 @@ defmodule DipexWeb.Router do
 
   scope "/api", DipexWeb do
     pipe_through :api
+
+    get("/", ApiController, :cmd)
   end
 end

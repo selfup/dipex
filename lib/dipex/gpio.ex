@@ -1,39 +1,21 @@
 defmodule Gpio do
-  use GenServer
-
   require Logger
 
-  def start_link(_) do
-    GenServer.start_link(__MODULE__, :ok, [])
+  def on do
+    :os.cmd('gpio write 0 1') |> Logger.warn
   end
 
-  def on(server, pin) do
-    GenServer.call(server, {:on})
-  end
-
-  def off(server) do
-    GenServer.call(server, {:off})
+  def off do
+    :os.cmd('gpio write 0 0') |> Logger.warn
   end
 
   ## Server Callbacks
 
-  def init(:ok) do
+  def init() do
     unexport()
     export()
 
-    :os.cmd('gpio write 0 1') |> Logger.warn
-
     {:ok, []}
-  end
-
-  def handle_call({:on}, _from, _state) do
-    :os.cmd('gpio write 0 1') |> Logger.warn
-    {:reply, [], []}
-  end
-
-  def handle_call({:off}, _from, _state) do
-    :os.cmd('gpio write 0 0') |> Logger.warn
-    {:reply, [], []}
   end
 
   def terminate(_reason, _state) do
@@ -42,11 +24,11 @@ defmodule Gpio do
 
   ## Private Methods
 
-  defp unexport() do
+  def unexport() do
     :os.cmd('gpio unexportall') |> Logger.warn
   end
 
-  defp export() do
+  def export() do
     :os.cmd('gpio mode 0 out') |> Logger.warn
   end
 end

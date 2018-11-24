@@ -14,6 +14,8 @@ defmodule FlexStream do
   end
 
   def init(:ok) do
+    Gpio.init()
+
     flex_connection()
 
     {:ok, []}

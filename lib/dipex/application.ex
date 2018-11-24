@@ -7,7 +7,6 @@ defmodule Dipex.Application do
   def start(_type, _args) do
     children = [
       DipexWeb.Endpoint,
-      Gpio,
       FlexStream,
     ]
 
