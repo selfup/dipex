@@ -21,6 +21,8 @@ defmodule Gpio do
     unexport()
     export()
 
+    :os.cmd('gpio write 0 1') |> Logger.warn
+
     {:ok, []}
   end
 
