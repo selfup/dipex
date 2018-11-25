@@ -39,16 +39,18 @@ defmodule Parser do
   end
 
   def check_frequency_and_fire_off_gpio_cmd(frequency) do
-    float = String.to_float(frequency)
+    float = String.to_float(frequency || "0.0")
 
-    if float >= 3.5 && float != nil do
+    tx = get_or_set("tx", nil)
+
+    if float >= 3.5 && tx == "1" do
       # turns on relay for ANT2
       Gpio.off()
 
       IO.puts "Relay ON"
     end
 
-    if float < 3.5 && float != nil do
+    if float < 3.5 && float > 0.0 && tx == "1" do
       # turns off relay for ANT2
       Gpio.on()
 
