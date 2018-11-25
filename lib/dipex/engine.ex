@@ -70,7 +70,7 @@ defmodule Engine do
         if gpio_read != "off" do
           Gpio.off()
           Cache.get_and_or_update("gpio", "off")
-          Logger.warn("GPIO UPDATE TO OFF")
+          Logger.debug("GPIO UPDATE TO OFF")
         end
 
         Logger.warn("RELAY ON")
