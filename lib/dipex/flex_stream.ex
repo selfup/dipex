@@ -5,6 +5,7 @@ defmodule FlexStream do
   require Logger
   require Gpio
   require Parser
+  require Engine
 
   # must include CLRF for radio to actually send back all information
   # otherwise it just sends back connection metadata
@@ -69,6 +70,8 @@ defmodule FlexStream do
 
   def log_msg(msg) do
     Logger.warn(msg)
+    
     Parser.parse(msg)
+    |> Engine.make_decision
   end
 end
