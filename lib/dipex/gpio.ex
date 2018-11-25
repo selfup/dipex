@@ -1,10 +1,8 @@
 defmodule Gpio do
   require Logger
 
-  @flex_rpi System.get_env("FLEX_RPI")
-
   def on do
-    case @flex_rpi do
+    case System.get_env("FLEX_RPI") do
       nil -> Logger.warn "nil on"
       "0" -> Logger.warn "0 on"
       "1" -> :os.cmd('gpio write 0 1') |> Logger.warn
@@ -12,7 +10,7 @@ defmodule Gpio do
   end
 
   def off do
-    case @flex_rpi do
+    case System.get_env("FLEX_RPI") do
       nil -> Logger.warn "nil off"
       "0" -> Logger.warn "0 off"
       "1" -> :os.cmd('gpio write 0 0') |> Logger.warn
@@ -35,7 +33,7 @@ defmodule Gpio do
   ## Private Methods
 
   def unexport() do
-    case @flex_rpi do
+    case System.get_env("FLEX_RPI") do
       nil -> Logger.warn "nil unexportall"
       "0" -> Logger.warn "0 unexportall"
       "1" -> :os.cmd('gpio unexportall') |> Logger.warn
@@ -43,7 +41,7 @@ defmodule Gpio do
   end
 
   def export() do
-    case @flex_rpi do
+    case System.get_env("FLEX_RPI") do
       nil -> Logger.warn "nil export"
       "0" -> Logger.warn "0 export"
       "1" -> :os.cmd('gpio mode 0 out') |> Logger.warn
