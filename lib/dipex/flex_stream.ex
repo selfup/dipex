@@ -7,7 +7,8 @@ defmodule FlexStream do
   require Parser
   require Engine
 
-  # must include CLRF for radio to actually send back all information
+  # must include CLRF
+  # for radio to actually send back all information
   # otherwise it just sends back connection metadata
   @all "c1|sub slice all\r\n"
   @flex_port 4992
@@ -69,9 +70,10 @@ defmodule FlexStream do
   end
 
   def log_msg(msg) do
-    Logger.warn(msg)
-    
-    Parser.parse(msg)
-    |> Engine.make_decision
+    if !System.get_env("FLEX_RPI"), do: Logger.warn(msg)
+
+    msg
+    |> Parser.parse()
+    |> Engine.make_decision()
   end
 end
