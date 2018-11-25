@@ -41,12 +41,14 @@ defmodule Parser do
   def check_frequency_and_fire_off_gpio_cmd(frequency) do
     float = String.to_float(frequency)
 
-    if float >= 3.5 do
+    if float >= 3.5 && float != nil do
       # turns on relay for ANT2
       Gpio.off()
 
       IO.puts "Relay ON"
-    else
+    end
+
+    if float < 3.5 && float != nil do
       # turns off relay for ANT2
       Gpio.on()
 
@@ -55,7 +57,17 @@ defmodule Parser do
   end
 
   def transmit_true_slices(kv_slices) do
-    Enum.filter(kv_slices, fn slice -> Map.get(slice, "tx") != nil end)
+    Enum.map(kv_slices, fn slice ->
+      tx = Map.get(slice, "tx")
+
+      cond  do
+        "1" -> set("tx", "1")
+        "0" -> set("tx", "0")
+        _nil -> nil
+      end
+
+      slice
+    end)
   end
 
   def kv_slices(slices) do
