@@ -7,7 +7,7 @@ defmodule Dipex.Application do
   def start(_type, _args) do
     children = [
       DipexWeb.Endpoint,
-      FlexStream,
+      FlexStream
     ]
 
     opts = [strategy: :one_for_one, name: Dipex.Supervisor]
@@ -17,7 +17,7 @@ defmodule Dipex.Application do
 
   def config_change(changed, _new, removed) do
     DipexWeb.Endpoint.config_change(changed, removed)
-    
+
     :ok
   end
 end

@@ -1,11 +1,10 @@
 defmodule FlexStream do
   use GenServer, restart: :permanent, shutdown: 5_000
-  
+
   require Supervisor
   require Logger
   require Gpio
   require Parser
-  require IEx
 
   # must include CLRF for radio to actually send back all information
   # otherwise it just sends back connection metadata
@@ -27,25 +26,16 @@ defmodule FlexStream do
   end
 
   def init(:ok) do
-    :ets.new(:dipex_cache, [
-      :named_table,
-      :set,
-      :public,
-      read_concurrency: true,
-      write_concurrency: true,
-    ])
-
+    Cache.init()
     Gpio.init()
 
     children = [{Task, fn -> dipex() end}]
-
     opts = [strategy: :one_for_one, name: Dipex.FlexStream.Supervisor]
-
     Supervisor.start_link(children, opts)
 
     {:ok, []}
   end
-  
+
   @doc """
   Connects to flex radio
   sends msg to recieve all
@@ -78,8 +68,7 @@ defmodule FlexStream do
   end
 
   def log_msg(msg) do
-    Logger.warn("\n\n" <> msg)
-
+    Logger.warn(msg)
     Parser.parse(msg)
   end
 end
