@@ -4,6 +4,7 @@ defmodule Engine do
   require Cache
 
   @ant "ANT2"
+  @fake_rf 9999999999.999999999
 
   def make_decision(slices) do
     Enum.each(slices, fn slice ->
@@ -30,17 +31,19 @@ defmodule Engine do
   above 3.5 the relay needs to be on
   """
   def check_frequency_and_fire_off_gpio_cmd(frequency) do
-    float = String.to_float(frequency || "0.0")
-    tx = Cache.get_or_set("tx", nil)
+    if frequency != nil do
+      float = String.to_float(frequency || "#{@fake_rf}")
+      tx = Cache.get_or_set("tx", nil)
 
-    relay_off(float, tx)
-    relay_on(float, tx)
-
-    Logger.info("tx=#{tx}")
+      if tx == "1" do
+        relay_off(float, tx)
+        relay_on(float, tx)
+      end
+    end
   end
 
   def relay_off(float, tx) do
-    if float >= 3.5 && tx == "1" do
+    if float >= 3.5 do
       # set power to HIGH on BCM PIN 17
       # turns off relay for ANT2 -> dipole mode on
       gpio_read = Cache.get_and_or_update("gpio", nil)
@@ -56,18 +59,22 @@ defmodule Engine do
   end
 
   def relay_on(float, tx) do
-    if float < 3.5 && float > 0.0 && tx == "1" do
-      # set power to LOW on BCM PIN 17
-      # turns on relay for ANT2 -> tophat mode on
-      gpio_read = Cache.get_and_or_update("gpio", nil)
+    # nested if for performance
+    # lot of ifs with this parser
+    if float < 3.5 do
+      if float != @fake_rf do
+        # set power to LOW on BCM PIN 17
+        # turns on relay for ANT2 -> tophat mode on
+        gpio_read = Cache.get_and_or_update("gpio", nil)
 
-      if gpio_read != "off" do
-        Gpio.off()
-        Cache.get_and_or_update("gpio", "off")
-        Logger.warn("GPIO UPDATE TO OFF")
+        if gpio_read != "off" do
+          Gpio.off()
+          Cache.get_and_or_update("gpio", "off")
+          Logger.warn("GPIO UPDATE TO OFF")
+        end
+
+        Logger.warn("RELAY ON")
       end
-
-      Logger.warn("RELAY ON")
     end
   end
 end
