@@ -10,7 +10,7 @@ defmodule Engine do
       antenna = Map.get(slice, "txant")
       frequency = Map.get(slice, "RF_frequency")
 
-      Logger.debug("slice txant=#{antenna} RF_frequency=#{frequency}")
+      Logger.warn("slice txant=#{antenna} RF_frequency=#{frequency}")
 
       if antenna != nil, do: Cache.get_or_set("antenna", antenna)
 
@@ -31,25 +31,43 @@ defmodule Engine do
   """
   def check_frequency_and_fire_off_gpio_cmd(frequency) do
     float = String.to_float(frequency || "0.0")
-
     tx = Cache.get_or_set("tx", nil)
 
-    Logger.info("tx=#{tx}")
+    relay_off(float, tx)
+    relay_on(float, tx)
 
+    Logger.info("tx=#{tx}")
+  end
+
+  def relay_off(float, tx) do
     if float >= 3.5 && tx == "1" do
       # set power to HIGH on BCM PIN 17
       # turns off relay for ANT2 -> dipole mode on
-      Gpio.on()
+      gpio_read = Cache.get_and_or_update("gpio", nil)
 
-      Logger.warn("Relay OFF")
+      if gpio_read != "on" do
+        Gpio.on()
+        Cache.get_and_or_update("gpio", "on")
+        Logger.debug("GPIO UPDATE TO ON")
+      end
+
+      Logger.warn("RELAY OFF")
     end
+  end
 
+  def relay_on(float, tx) do
     if float < 3.5 && float > 0.0 && tx == "1" do
       # set power to LOW on BCM PIN 17
       # turns on relay for ANT2 -> tophat mode on
-      Gpio.off()
+      gpio_read = Cache.get_and_or_update("gpio", nil)
 
-      Logger.warn("Relay ON")
+      if gpio_read != "off" do
+        Gpio.off()
+        Cache.get_and_or_update("gpio", "off")
+        Logger.warn("GPIO UPDATE TO OFF")
+      end
+
+      Logger.warn("RELAY ON")
     end
   end
 end

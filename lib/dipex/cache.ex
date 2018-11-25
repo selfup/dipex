@@ -9,13 +9,13 @@ defmodule Cache do
     ])
   end
 
-  def get_or_set(key, ant) do
+  def get_or_set(key, val) do
     case get(key) do
       {:not_found} ->
-        set(key, ant)
+        if val != nil, do: set(key, val)
 
-      {:found, antenna} ->
-        antenna
+      {:found, val} ->
+        val
     end
   end
 
@@ -33,5 +33,20 @@ defmodule Cache do
     true = :ets.insert(:dipex_cache, {key, data})
 
     data
+  end
+
+  def get_and_or_update(key, val) do
+    case get(key) do
+      {:not_found} ->
+        set(key, val)
+
+      {:found, res} ->
+        # if a new GPIO state is needed update it
+        if val != res && val != nil do
+          set(key, val)
+        else
+          res
+        end
+    end
   end
 end
