@@ -11,7 +11,6 @@ defmodule Parser do
     |> log_slices
     |> kv_slices
     |> transmit_true_slices
-    |> log_slices
     |> relay_decision
   end
 
@@ -22,13 +21,13 @@ defmodule Parser do
       antenna = Map.get(slice, "txant")
       frequency = Map.get(slice, "RF_frequency")
 
+      IO.inspect {antenna, frequency}
+
       case antenna == @ant do
         true ->
           check_frequency_and_fire_off_gpio_cmd(frequency)
-        false ->
-          "not correct antenna"
         _ ->
-          "not correct antenna"
+          nil
       end
     end)
   end
@@ -47,8 +46,6 @@ defmodule Parser do
 
       IO.puts "Relay OFF"
     end
-
-    "antenna decision was made"
   end
 
   def transmit_true_slices(kv_slices) do
