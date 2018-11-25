@@ -94,6 +94,7 @@ defmodule Parser do
         set(key, ant)
 
       {:found, antenna} ->
+        IO.inspect antenna
         antenna
     end
   end
