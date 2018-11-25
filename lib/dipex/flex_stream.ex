@@ -4,6 +4,8 @@ defmodule FlexStream do
   require Supervisor
   require Logger
   require Gpio
+  require Parser
+  require IEx
 
   # must include CLRF for radio to actually send back all information
   # otherwise it just sends back connection metadata
@@ -68,6 +70,8 @@ defmodule FlexStream do
   end
 
   def log_msg(msg) do
-    Logger.warn("\n\n" <> msg <> "\n"<> to_string(DateTime.utc_now) <> "\n")
+    Logger.warn("\n\n" <> msg)
+
+    Parser.parse(msg)
   end
 end
