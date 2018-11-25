@@ -36,13 +36,13 @@ defmodule Engine do
       tx = Cache.get_or_set("tx", nil)
 
       if tx == "1" do
-        relay_off(float, tx)
-        relay_on(float, tx)
+        relay_off(float)
+        relay_on(float)
       end
     end
   end
 
-  def relay_off(float, tx) do
+  def relay_off(float) do
     if float >= 3.5 do
       # set power to HIGH on BCM PIN 17
       # turns off relay for ANT2 -> dipole mode on
@@ -58,7 +58,7 @@ defmodule Engine do
     end
   end
 
-  def relay_on(float, tx) do
+  def relay_on(float) do
     # nested if for performance
     # lot of ifs with this parser
     if float < 3.5 do
