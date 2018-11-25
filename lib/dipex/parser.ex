@@ -60,9 +60,9 @@ defmodule Parser do
     Enum.map(kv_slices, fn slice ->
       tx = Map.get(slice, "tx")
 
-      cond  do
-        "1" -> set("tx", "1")
-        "0" -> set("tx", "0")
+      case tx do
+        "1" -> set("tx", tx)
+        "0" -> set("tx", tx)
         _nil -> nil
       end
 
