@@ -23,7 +23,13 @@ defmodule Parser do
 
       IO.inspect {antenna, frequency}
 
-      case antenna == @ant do
+      # write antenna to ETS if you ever find it
+      if antenna != nil do
+        get_or_set("antenna", antenna)
+      end
+
+      # then check ETS for current antenna
+      case get_or_set("antenna", antenna) == @ant do
         true ->
           check_frequency_and_fire_off_gpio_cmd(frequency)
         _ ->
@@ -80,6 +86,32 @@ defmodule Parser do
 
   def find_slices(slices) do
     Enum.filter(slices, fn e -> e =~ "|slice" end)
+  end
+
+   defp get_or_set(key, ant) do
+    case get(key) do
+      {:not_found} ->
+        set(key, ant)
+
+      {:found, antenna} ->
+        antenna
+    end
+  end
+
+  def get(key) do
+    case :ets.lookup(:dipex_cache, key) do
+      [] ->
+        {:not_found}
+
+      [{_key, data}] ->
+        {:found, data}
+    end
+  end
+
+  defp set(key, data) do
+    true = :ets.insert(:dipex_cache, {key, data})
+
+    data
   end
 
   defp log_slices(slice) do

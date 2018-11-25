@@ -27,6 +27,14 @@ defmodule FlexStream do
   end
 
   def init(:ok) do
+    :ets.new(:dipex_cache, [
+      :named_table,
+      :set,
+      :public,
+      read_concurrency: true,
+      write_concurrency: true,
+    ])
+
     Gpio.init()
 
     children = [{Task, fn -> dipex() end}]
