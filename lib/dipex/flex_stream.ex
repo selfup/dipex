@@ -31,9 +31,7 @@ defmodule FlexStream do
     Cache.init()
     Gpio.init()
 
-    children = [{Task, fn -> dipex() end}]
-    opts = [strategy: :one_for_one, name: Dipex.FlexStream.Supervisor]
-    Supervisor.start_link(children, opts)
+    init_stream()
 
     {:ok, []}
   end
@@ -45,14 +43,16 @@ defmodule FlexStream do
   msg gets parsed
   based on msg gpio is turned on or off
   """
-  def dipex do
-    {:ok, flex} = connect()
+  def init_stream do
+    {:ok, socket} = connect()
 
-    :ok = all(flex)
+    :ok = all(socket)
 
-    Cache.set("flex", flex)
+    Cache.set("flex_socket", socket)
 
-    read(flex)
+    children = [{Task, fn -> read(socket) end}]
+    opts = [strategy: :one_for_one, name: Dipex.FlexStream.Supervisor]
+    Supervisor.start_link(children, opts)
   end
 
   def connect do
@@ -66,12 +66,12 @@ defmodule FlexStream do
   def read(flex) do
     {:ok, msg} = :gen_tcp.recv(flex, 0)
 
-    log_msg(msg)
+    parse_msg(msg)
 
     read(flex)
   end
 
-  def log_msg(msg) do
+  def parse_msg(msg) do
     if !System.get_env("FLEX_RPI"), do: Logger.warn(msg)
 
     msg
