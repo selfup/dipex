@@ -50,6 +50,8 @@ defmodule FlexStream do
 
     :ok = all(flex)
 
+    Cache.set("flex", flex)
+
     read(flex)
   end
 

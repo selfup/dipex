@@ -14,8 +14,12 @@ defmodule Parser do
     String.split(msg, "\n")
   end
 
-  def find_slices(slices) do
-    Enum.filter(slices, fn e -> e =~ "|slice" end)
+  def find_slices(msgs) do
+    Enum.filter(msgs, fn msg ->
+      msg
+      |> String.slice(0..15)
+      |> String.contains?("|slice")
+    end)
   end
 
   def slices_into_maps(slices) do
@@ -39,11 +43,11 @@ defmodule Parser do
   defp slice_to_map(slice) do
     slice
     |> String.split(" ")
-    |> build_kv_tuples_from_slice_list
+    |> kv_tuples_from_slice
     |> Enum.into(%{})
   end
 
-  defp build_kv_tuples_from_slice_list(slice_list) do
+  defp kv_tuples_from_slice(slice_list) do
     Enum.map(slice_list, fn val ->
       kv = String.split(val, "=")
 
