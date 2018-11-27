@@ -37,7 +37,8 @@ defmodule Dipex.MixProject do
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
-      {:nerves_uart, "~> 1.2.1"}
+      {:nerves_uart, "~> 1.2.1"},
+      {:ex_doc, "~> 0.19", only: :dev, runtime: false}
     ]
   end
 end
