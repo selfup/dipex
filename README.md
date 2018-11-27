@@ -13,7 +13,7 @@ This is for my Dad :pray:
 
 We are both HAM radio operators :tada:
 
-## On Boot
+## On Boot (init)
 
 #### ENV vars
 
