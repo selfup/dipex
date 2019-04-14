@@ -23,7 +23,7 @@ defmodule Parser do
   end
 
   def slices_into_maps(slices) do
-    Enum.map(slices, fn slice_str -> slice_to_map(slice_str) end)
+    Enum.map(slices, &slice_to_map(&1))
   end
 
   def set_tx_in_cache(mapped_slices) do

@@ -50,7 +50,7 @@ defmodule FlexStream do
 
     Cache.set("flex_socket", socket)
 
-    children = [{Task, fn -> read(socket) end}]
+    children = [{Task, &read(socket)}]
     opts = [strategy: :one_for_one, name: Dipex.FlexStream.Supervisor]
     Supervisor.start_link(children, opts)
   end
